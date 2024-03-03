@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 
-import { SwaggerExModule } from '@extensions';
+import { SwaggerExModule } from '@extensions/swagger-ex';
 
 import { AppModule } from './app.module';
 
