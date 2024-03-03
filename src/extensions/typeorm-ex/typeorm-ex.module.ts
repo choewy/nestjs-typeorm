@@ -1,5 +1,8 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, FactoryProvider, Module, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { createExtendsRepositoryProvider } from './providers';
+import { ExtendsRepository } from './abstracts';
 
 @Module({})
 export class TypeOrmExModule {
@@ -17,6 +20,20 @@ export class TypeOrmExModule {
         }),
       ],
       module: TypeOrmExModule,
+    };
+  }
+
+  static forFeature(...IRepositories: Type<ExtendsRepository<any>>[]): DynamicModule {
+    const providers: FactoryProvider[] = [];
+
+    for (const IRepository of IRepositories) {
+      providers.push(createExtendsRepositoryProvider(IRepository));
+    }
+
+    return {
+      module: TypeOrmExModule,
+      providers: providers,
+      exports: providers,
     };
   }
 }
