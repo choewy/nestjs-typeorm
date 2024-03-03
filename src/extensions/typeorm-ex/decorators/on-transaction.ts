@@ -3,6 +3,12 @@ import { EntityManager } from 'typeorm';
 import { applyDecorators } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
+export type OnTransactionResult<T = any> = {
+  handler: string;
+  value: T | null;
+  error: Error | null;
+};
+
 export const OnTransaction = (name: string) =>
   applyDecorators(OnEvent(name), (_target: any, _key: string, descriptor: PropertyDescriptor) => {
     const handler = descriptor.value;
@@ -11,11 +17,13 @@ export const OnTransaction = (name: string) =>
       return [key, Reflect.getMetadata(key, descriptor.value)];
     });
 
-    descriptor.value = async function (em: EntityManager, ...args: any[]) {
+    descriptor.value = async function (em: EntityManager, ...args: any[]): Promise<OnTransactionResult> {
       try {
-        return await handler.bind(em.getRepository(this.target))(...args);
+        const value = await handler.bind(em.getRepository(this.target))(...args);
+
+        return { handler: handler.name, value, error: null };
       } catch (e) {
-        return e;
+        return { handler: handler.name, value: null, error: e };
       }
     };
 

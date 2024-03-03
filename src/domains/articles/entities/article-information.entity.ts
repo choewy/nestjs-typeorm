@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, Column } from 'typeorm';
 
 import { Article } from './article.entity';
 
@@ -6,6 +6,9 @@ import { Article } from './article.entity';
 export class ArticleInformation {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   readonly id: number;
+
+  @Column({ type: 'int', unsigned: true, default: 0 })
+  likes: number;
 
   @OneToOne(() => Article, (e) => e.information, { onDelete: 'CASCADE' })
   @JoinColumn()
