@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
+import { TypeOrmExModule } from './extensions';
+
 @Module({
-  imports: [],
+  imports: [TypeOrmExModule.forRoot()],
   controllers: [AppController],
   providers: [AppService],
 })
