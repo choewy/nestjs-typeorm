@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { TransactionManager } from '@extensions/typeorm-ex';
+import { TransactionManager, TransactionTarget } from '@extensions/typeorm-ex';
 import { UserTransaction } from '@domains/users/repositories';
 
 import { ArticleInformationTransaction, ArticleTransaction } from './repositories';
@@ -11,28 +11,19 @@ export class ArticlesService {
   constructor(private readonly transactionManager: TransactionManager) {}
 
   async createArticle(command: PostArticleCommand) {
-    const userTransaction = await this.transactionManager.run({
-      name: UserTransaction.FindById,
-      args: [command.userId],
-    });
+    const userTransaction = await this.transactionManager.run(new TransactionTarget(UserTransaction.FindById, { args: [command.userId] }));
 
-    const user = userTransaction[UserTransaction.FindById][0].value;
+    const user = userTransaction[0].value;
 
     if (user == null) {
       throw new NotFoundException('not found user');
     }
 
-    const results = await this.transactionManager.run(
-      {
-        name: ArticleTransaction.Post,
-        args: [user],
-      },
-      {
-        name: ArticleInformationTransaction.Post,
-        replaceArgs: true,
-      },
+    const articleTransaction = await this.transactionManager.run(
+      new TransactionTarget(ArticleTransaction.Post, { args: [user] }),
+      new TransactionTarget(ArticleInformationTransaction.Post, { replaceArgs: true }),
     );
 
-    return results;
+    return articleTransaction;
   }
 }

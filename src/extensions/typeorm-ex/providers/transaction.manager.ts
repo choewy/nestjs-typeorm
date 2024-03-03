@@ -3,15 +3,14 @@ import { DataSource, EntityManager } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { TransactionTarget } from '../abstracts';
-import { OnTransactionResult } from '../decorators';
+import { TransactionTarget, TransactionResult } from '../classes';
 
 @Injectable()
 export class TransactionManager {
   constructor(private readonly dataSource: DataSource, private readonly eventEmitter: EventEmitter2) {}
 
   private async emit(em: EntityManager, target: TransactionTarget) {
-    const results = (await this.eventEmitter.emitAsync(target.name, em, ...(target.args ?? []))) as OnTransactionResult[];
+    const results = (await this.eventEmitter.emitAsync(target.name, em, target.id, ...(target.args ?? []))) as TransactionResult[];
 
     for (const result of results) {
       if (result.error) {
@@ -24,7 +23,7 @@ export class TransactionManager {
 
   async run(...targets: TransactionTarget[]) {
     return this.dataSource.transaction(async (em) => {
-      const returnValue: Record<string, OnTransactionResult[]> = {};
+      const returnValue: TransactionResult[] = [];
 
       for (let i = 0; i < targets.length; i++) {
         const target = targets[i];
@@ -32,15 +31,11 @@ export class TransactionManager {
 
         const nextTarget = targets[i + 1];
 
-        if (nextTarget && nextTarget.replaceArgs) {
+        if (nextTarget?.replaceArgs) {
           nextTarget.args = results.map((result) => result.value);
         }
 
-        returnValue[target.name] = [];
-
-        for (const result of results) {
-          returnValue[target.name].push(result);
-        }
+        returnValue.push(...results);
       }
 
       return returnValue;
