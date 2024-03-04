@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { TransactionManager, TransactionTarget } from '@extensions/typeorm-ex';
-import { UserTransaction } from '@domains/users/repositories';
+import { UserTransaction } from '@examples/users/repositories';
 
 import { ArticleInformationTransaction, ArticleLikeHistoryTransaction, ArticleRepository, ArticleTransaction } from './repositories';
 import { LikeOrUndoArticleCommand, PostArticleCommand } from './commands';

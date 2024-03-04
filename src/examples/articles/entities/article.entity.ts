@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, OneToOne, JoinTable, ManyToOne, JoinColumn } from 'typeorm';
 
 import { ArticleInformation } from './article-information.entity';
-import { User } from '@domains/users';
+import { User } from '@examples/users';
 
 @Entity()
 export class Article {

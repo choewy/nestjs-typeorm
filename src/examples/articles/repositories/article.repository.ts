@@ -1,6 +1,6 @@
 import { InjectableRepository, ExtendsRepository, OnTransaction } from '@extensions/typeorm-ex';
 
-import { User } from '@domains/users';
+import { User } from '@examples/users';
 
 import { Article } from '../entities';
 import { ArticleTransaction } from './enums';

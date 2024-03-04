@@ -1,6 +1,6 @@
 import { Entity, JoinTable, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Article } from '@domains/articles/entities';
+import { Article } from '@examples/articles/entities';
 
 @Entity()
 export class User {

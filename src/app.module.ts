@@ -5,8 +5,7 @@ import { AppService } from './app.service';
 
 import { TypeOrmExModule } from '@extensions/typeorm-ex';
 
-import { UsersModule } from '@domains/users';
-import { ArticlesModule } from '@domains/articles';
+import { ExamplesModule } from './examples';
 
 @Module({
   imports: [
@@ -19,8 +18,7 @@ import { ArticlesModule } from '@domains/articles';
       synchronize: true,
       entities: ['./dist/**/*.entity.{ts,js}'],
     }),
-    UsersModule,
-    ArticlesModule,
+    ExamplesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
