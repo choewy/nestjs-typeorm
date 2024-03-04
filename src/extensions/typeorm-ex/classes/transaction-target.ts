@@ -1,20 +1,23 @@
 import { v4 } from 'uuid';
 
 export class TransactionTarget {
-  id: string;
   args: any[];
-  replaceArgs: boolean;
+  id: string = v4();
+  replaceArgs = false;
 
-  constructor(
-    readonly name: string,
-    opt?: {
-      id?: string;
-      args?: any[];
-      replaceArgs?: boolean;
-    },
-  ) {
-    this.id = opt?.id ?? v4();
-    this.args = opt?.args ?? [];
-    this.replaceArgs = opt?.replaceArgs ?? false;
+  constructor(readonly name: string, ...args: any[]) {
+    this.args = args ?? [];
+  }
+
+  setId(id: string) {
+    this.id = id;
+
+    return this;
+  }
+
+  setReplaceArgs() {
+    this.replaceArgs = true;
+
+    return this;
   }
 }

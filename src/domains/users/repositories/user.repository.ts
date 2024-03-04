@@ -12,6 +12,11 @@ export class UserRepository extends ExtendsRepository<User> {
     return user;
   }
 
+  @OnTransaction(UserTransaction.ExistsById)
+  async existsById(id: number): Promise<boolean> {
+    return this.existsBy({ id });
+  }
+
   @OnTransaction(UserTransaction.FindById)
   async findById(id: number, pessimisticWriteLock?: boolean): Promise<User | null> {
     return this.findOne({
