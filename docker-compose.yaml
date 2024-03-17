@@ -1,0 +1,16 @@
+version: '3.8'
+
+name: nestjs-typeorm
+
+services:
+  mysql:
+    build:
+      context: dockerfiles/mysql
+    ports:
+      - 33061:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - .docker/mysql/log:/var/log/mysql
+      - .docker/mysql/lib:/var/lib/mysql
+      - .docker/mysql/disk:/disk
